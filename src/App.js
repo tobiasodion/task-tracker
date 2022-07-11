@@ -6,11 +6,13 @@ import Tasks from './components/Tasks';
 import AddTask from './components/AddTask';
 import Footer from './components/Footer';
 import About from './components/About';
+import { TaskDetails } from './components/TaskDetails';
 
 function App() {
 
   const [tasks, setTasks] = useState([])
   const [showAdd, setShowAdd] = useState(false)
+  const [task, setTask] = useState({})
 
   useEffect(() => {
     const getTasks = async () => {
@@ -35,6 +37,11 @@ function App() {
     const data = await res.json()
 
     return data
+  }
+
+  //View Task
+  const viewTask = async (id) => {
+    setTask(tasks.filter((task) => task.id === id)[0])
   }
 
   //Delete Task
@@ -83,6 +90,8 @@ function App() {
     //const newTask = {id, ...task}
     //setTasks([...tasks, newTask])
   }
+
+
   return (
     <Router>
       <div className="container">
@@ -91,10 +100,11 @@ function App() {
           <Route path='/' element={
             <>
             {showAdd && <AddTask onAdd={addTask} />}
-            {tasks.length > 0 ? (<Tasks tasks={tasks} onDelete={deleteTask} onToggle={toggleReminder} />) : ('No Tasks To Show')}
+            {tasks.length > 0 ? (<Tasks tasks={tasks} onDelete={deleteTask} onToggle={toggleReminder} onDetails={viewTask}/>) : ('No Tasks To Show')}
           </>
           } />
           <Route path='/about' element={<About />} />
+          <Route path='/details' element={<TaskDetails task={task}/>} />
         </Routes>
         <Footer />
       </div>
